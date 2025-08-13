@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+:root {
+    --primary-color: #007bff;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --background-color: #f0f2f5;
+    --border-radius: 8px;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-color);
+    color: var(--dark-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.game-container {
+    background-color: white;
+    padding: 2rem 3rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 90%;
+    max-width: 450px;
+}
+
+h1 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.instructions {
+    margin-bottom: 1.5rem;
+    color: #6c757d;
+}
+
+.difficulty-container {
+    margin-bottom: 1.5rem;
+}
+
+.difficulty-container label {
+    margin-right: 0.5rem;
+    font-weight: 600;
+}
+
+select, input[type="number"] {
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+    border: 1px solid #ced4da;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+select:focus, input[type="number"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.input-area {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+input[type="number"] {
+    flex-grow: 1;
+    width: 60%; /* Fix for some flexbox rendering issues */
+}
+
+button {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: var(--border-radius);
+    background-color: var(--primary-color);
+    color: white;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+button:disabled {
+    background-color: #a0c7ff;
+    cursor: not-allowed;
+}
+
+#resetBtn {
+    background-color: var(--success-color);
+}
+
+#resetBtn:hover {
+    background-color: #218838;
+}
+
+.feedback {
+    font-size: 1.2rem;
+    font-weight: 600;
+    min-height: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.feedback.success { color: var(--success-color); }
+.feedback.error { color: var(--danger-color); }
+.feedback.info { color: var(--primary-color); }
+
+.attempts-info, .previous-guesses {
+    color: #6c757d;
+}
+
+.hidden {
+    display: none;
+}

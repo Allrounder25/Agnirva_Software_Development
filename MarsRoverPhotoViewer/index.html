@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mars Rover Photos</title>
+    <title>Mars Rover Photo Viewer</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body class="dark-mode">
     <header>
-        <h1>Mars Rover Photos</h1>
-        <button id="theme-toggle">Dark Mode</button>
+        <h1>Mars Rover Photo Viewer</h1>
+        <button id="theme-toggle" aria-label="Toggle theme">
+            <span class="icon-light-mode">☀️</span>
+            <span class="icon-dark-mode">🌙</span>
+        </button>
     </header>
     <main>
         <div class="controls">
@@ -27,6 +30,22 @@
         </div>
         <div id="photo-gallery" class="gallery"></div>
     </main>
+    
+    <div id="photo-modal" class="modal" style="display: none;">
+        <span class="close-button">&times;</span>
+        <div class="modal-content">
+            <img id="modal-photo" src="" alt="Mars Rover Photo">
+            <div class="modal-info">
+                <p><strong>Rover:</strong> <span id="modal-rover"></span></p>
+                <p><strong>Camera:</strong> <span id="modal-camera"></span></p>
+                <p><strong>Earth Date:</strong> <span id="modal-earth-date"></span></p>
+                <p><strong>Sol:</strong> <span id="modal-sol"></span></p>
+            </div>
+            <button id="prev-button" class="modal-nav-button prev">&lt;</button>
+            <button id="next-button" class="modal-nav-button next">&gt;</button>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

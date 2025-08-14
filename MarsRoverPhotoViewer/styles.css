@@ -5,11 +5,24 @@
     --background-light: #f0f0f0;
     --text-light: #000000;
     --card-light: #ffffff;
+    --accent-color: #ff4500;
+}
+
+html, body {
+    box-sizing: border-box;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
 }
 
 body {
-    font-family: sans-serif;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     transition: background-color 0.3s, color 0.3s;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 body.dark-mode {
@@ -27,41 +40,336 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
+    background-color: var(--card-dark);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+body.light-mode header {
+    background-color: var(--card-light);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+#theme-toggle {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: var(--text-dark);
+    transition: color 0.3s;
+    padding: 0.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#theme-toggle:hover {
+    color: var(--accent-color);
+}
+
+body.light-mode #theme-toggle {
+    color: var(--text-light);
+}
+
+.icon-light-mode,
+.icon-dark-mode {
+    display: none;
+}
+
+body.light-mode .icon-light-mode {
+    display: block;
+}
+
+body.dark-mode .icon-dark-mode {
+    display: block;
 }
 
 .controls {
-    padding: 1rem 2rem;
+    padding: 1.5rem 2rem;
     display: flex;
+    flex-wrap: wrap;
     gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--card-dark);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+body.light-mode .controls {
+    background-color: var(--card-light);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.controls select,
+.controls input[type="date"],
+.controls button {
+    background-color: var(--card-dark);
+    color: var(--text-dark);
+    border: 1px solid var(--accent-color);
+    padding: 0.8rem 1.2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.controls select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23ffffff" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 0.8rem center;
+    background-size: 1.2em;
+    padding-right: 2.5rem;
+}
+
+body.light-mode .controls select {
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+}
+
+.controls input[type="date"] {
+    color-scheme: dark;
+}
+
+body.light-mode .controls input[type="date"] {
+    color-scheme: light;
+}
+
+.controls button {
+    background-color: var(--accent-color);
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+    border: none;
+}
+
+.controls select:focus,
+.controls input[type="date"]:focus,
+.controls button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 69, 0, 0.5), 0 0 10px rgba(255, 69, 0, 0.3);
+}
+
+.controls button:hover {
+    background-color: #ff6347; /* Lighter shade of accent color */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(255, 69, 0, 0.3);
+}
+
+body.light-mode .controls select,
+body.light-mode .controls input[type="date"] {
+    background-color: var(--card-light);
+    color: var(--text-light);
+    border-color: rgba(0,0,0,0.2);
+}
+
+body.light-mode .controls button {
+    background-color: var(--accent-color);
+    color: white;
 }
 
 .gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
     padding: 2rem;
+    flex-grow: 1;
 }
 
 .gallery-item {
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.1);
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.like-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+    transform: scale(1);
+}
+
+.like-button.liked {
+    color: var(--accent-color);
+    transform: scale(1.2);
+}
+
+body.light-mode .gallery-item {
+    border: 1px solid rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.gallery-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
 }
 
 .gallery-item img {
     width: 100%;
-    height: auto;
+    height: 220px;
+    object-fit: cover;
     display: block;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.gallery-item img:hover {
+    transform: scale(1.03);
 }
 
 .gallery-item .info {
     padding: 1rem;
-}
-
-body.dark-mode .gallery-item {
     background-color: var(--card-dark);
+    color: var(--text-dark);
 }
 
-body.light-mode .gallery-item {
+body.light-mode .gallery-item .info {
     background-color: var(--card-light);
+    color: var(--text-light);
+}
+
+.loader {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid var(--accent-color);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 2s linear infinite;
+    margin: 50px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+    display: flex; /* Use flexbox for centering */
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    position: relative;
+    background-color: var(--card-dark);
+    margin: auto;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 900px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    transform: scale(0.95);
+    opacity: 0;
+    animation: modalOpen 0.3s forwards ease-out;
+}
+
+@keyframes modalOpen {
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+body.light-mode .modal-content {
+    background-color: var(--card-light);
+}
+
+#modal-photo {
+    max-width: 100%;
+    max-height: 70vh;
+    display: block;
+    border-radius: 8px;
+    object-fit: contain;
+}
+
+.modal-info {
+    color: var(--text-dark);
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+body.light-mode .modal-info {
+    color: var(--text-light);
+}
+
+.modal-info p {
+    margin: 5px 0;
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: var(--accent-color);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0,0,0,0.6);
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    font-size: 28px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.modal-nav-button:hover {
+    background-color: rgba(0,0,0,0.9);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.modal-nav-button.prev {
+    left: 20px;
+}
+
+.modal-nav-button.next {
+    right: 20px;
 }

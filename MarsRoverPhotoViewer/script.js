@@ -6,18 +6,52 @@ const fetchButton = document.getElementById('fetch-photos');
 const photoGallery = document.getElementById('photo-gallery');
 const themeToggle = document.getElementById('theme-toggle');
 
+// Modal elements
+const photoModal = document.getElementById('photo-modal');
+const modalPhoto = document.getElementById('modal-photo');
+const modalRover = document.getElementById('modal-rover');
+const modalCamera = document.getElementById('modal-camera');
+const modalEarthDate = document.getElementById('modal-earth-date');
+const modalSol = document.getElementById('modal-sol');
+const closeButton = document.querySelector('.close-button');
+const prevButton = document.getElementById('prev-button');
+const nextButton = document.getElementById('next-button');
+
+let photos = [];
+let currentPhotoIndex = 0;
+
 // Theme switcher
 themeToggle.addEventListener('click', () => {
     document.body.classList.toggle('light-mode');
     document.body.classList.toggle('dark-mode');
 
     const isDarkMode = document.body.classList.contains('dark-mode');
+    const lightModeIcon = themeToggle.querySelector('.icon-light-mode');
+    const darkModeIcon = themeToggle.querySelector('.icon-dark-mode');
+
     if (isDarkMode) {
-        themeToggle.textContent = 'Dark Mode';
+        lightModeIcon.style.display = 'none';
+        darkModeIcon.style.display = 'block';
     } else {
-        themeToggle.textContent = 'Light Mode';
+        lightModeIcon.style.display = 'block';
+        darkModeIcon.style.display = 'none';
     }
 });
+
+// Set initial theme icon display
+(function() {
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    const lightModeIcon = themeToggle.querySelector('.icon-light-mode');
+    const darkModeIcon = themeToggle.querySelector('.icon-dark-mode');
+
+    if (isDarkMode) {
+        lightModeIcon.style.display = 'none';
+        darkModeIcon.style.display = 'block';
+    } else {
+        lightModeIcon.style.display = 'block';
+        darkModeIcon.style.display = 'none';
+    }
+})();
 
 // Fetch photos
 fetchButton.addEventListener('click', () => {
@@ -30,7 +64,7 @@ fetchButton.addEventListener('click', () => {
         return;
     }
 
-    photoGallery.innerHTML = '<p>Finding the data...</p>';
+    photoGallery.innerHTML = '<div class="loader"></div>';
 
     let apiUrl = `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?earth_date=${date}&api_key=${apiKey}`;
     if (camera !== 'all') {
@@ -40,7 +74,8 @@ fetchButton.addEventListener('click', () => {
     fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
-            displayPhotos(data.photos);
+            photos = data.photos;
+            displayPhotos(photos);
         })
         .catch(error => {
             console.error('Error fetching photos:', error);
@@ -56,23 +91,33 @@ function displayPhotos(photos) {
         return;
     }
 
-    photos.forEach(photo => {
+    photos.forEach((photo, index) => {
         const item = document.createElement('div');
         item.classList.add('gallery-item');
 
         const img = document.createElement('img');
         img.src = photo.img_src;
         img.alt = `Mars rover ${photo.rover.name} photo`;
+        img.addEventListener('click', () => openModal(index));
 
         const info = document.createElement('div');
         info.classList.add('info');
         info.innerHTML = `
             <p><strong>Camera:</strong> ${photo.camera.full_name}</p>
             <p><strong>Sol:</strong> ${photo.sol}</p>
+            <p><strong>Date:</strong> ${photo.earth_date}</p>
         `;
+
+        const likeButton = document.createElement('button');
+        likeButton.classList.add('like-button');
+        likeButton.innerHTML = '❤️';
+        likeButton.addEventListener('click', () => {
+            likeButton.classList.toggle('liked');
+        });
 
         item.appendChild(img);
         item.appendChild(info);
+        item.appendChild(likeButton);
         photoGallery.appendChild(item);
     });
 }
@@ -80,26 +125,85 @@ function displayPhotos(photos) {
 // Populate camera options based on rover
 roverSelect.addEventListener('change', () => {
     const rover = roverSelect.value;
-    // This is a simplified version. A real implementation would fetch available cameras for each rover.
-    const cameras = {
-        curiosity: ['FHAZ', 'RHAZ', 'MAST', 'CHEMCAM', 'MAHLI', 'MARDI', 'NAVCAM'],
-        opportunity: ['FHAZ', 'RHAZ', 'NAVCAM', 'PANCAM', 'MINITES'],
-        perseverance: ['EDL_RUCAM', 'EDL_RDCAM', 'EDL_DDCAM', 'EDL_PUCAM1', 'EDL_PUCAM2', 'NAVCAM_LEFT', 'NAVCAM_RIGHT', 'MCZ_RIGHT', 'MCZ_LEFT', 'FRONT_HAZCAM_LEFT_A', 'FRONT_HAZCAM_RIGHT_A', 'REAR_HAZCAM_LEFT', 'REAR_HAZCAM_RIGHT', 'SKYCAM', 'SHERLOC_WATSON'],
-        spirit: ['FHAZ', 'RHAZ', 'NAVCAM', 'PANCAM', 'MINITES']
-    };
+    const apiUrl = `https://api.nasa.gov/mars-photos/api/v1/manifests/${rover}?api_key=${apiKey}`;
 
-    cameraSelect.innerHTML = '<option value="all">All Cameras</option>';
-    if (cameras[rover]) {
-        cameras[rover].forEach(camera => {
-            const option = document.createElement('option');
-            option.value = camera;
-            option.textContent = camera;
-            cameraSelect.appendChild(option);
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            const cameras = data.photo_manifest.photos.reduce((acc, photo) => {
+                photo.cameras.forEach(camera => {
+                    if (!acc.includes(camera)) {
+                        acc.push(camera);
+                    }
+                });
+                return acc;
+            }, []);
+
+            cameraSelect.innerHTML = '<option value="all">All Cameras</option>';
+            cameras.forEach(camera => {
+                const option = document.createElement('option');
+                option.value = camera;
+                option.textContent = camera;
+                cameraSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching camera data:', error);
         });
-    }
 });
 
 // Set default date to today and max date to today
 const today = new Date().toISOString().split('T')[0];
 dateInput.value = today;
 dateInput.setAttribute('max', today);
+
+// Modal Functions
+function openModal(index) {
+    currentPhotoIndex = index;
+    showPhoto(currentPhotoIndex);
+    photoModal.style.display = 'flex'; // Use flex to center content
+}
+
+function showPhoto(index) {
+    const photo = photos[index];
+    modalPhoto.src = photo.img_src;
+    modalRover.textContent = photo.rover.name;
+    modalCamera.textContent = photo.camera.full_name;
+    modalEarthDate.textContent = photo.earth_date;
+    modalSol.textContent = photo.sol;
+
+    prevButton.disabled = (currentPhotoIndex === 0);
+    nextButton.disabled = (currentPhotoIndex === photos.length - 1);
+}
+
+function closeModal() {
+    photoModal.style.display = 'none';
+}
+
+function nextPhoto() {
+    if (currentPhotoIndex < photos.length - 1) {
+        currentPhotoIndex++;
+        showPhoto(currentPhotoIndex);
+    }
+}
+
+function prevPhoto() {
+    if (currentPhotoIndex > 0) {
+        currentPhotoIndex--;
+        showPhoto(currentPhotoIndex);
+    }
+}
+
+// Event Listeners for Modal
+closeButton.addEventListener('click', closeModal);
+prevButton.addEventListener('click', prevPhoto);
+nextButton.addEventListener('click', nextPhoto);
+
+// Close modal when clicking outside the image
+photoModal.addEventListener('click', (e) => {
+    if (e.target === photoModal) {
+        closeModal();
+    }
+});
+
+

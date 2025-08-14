@@ -1,0 +1,67 @@
+:root {
+    --background-dark: #121212;
+    --text-dark: #ffffff;
+    --card-dark: #1e1e1e;
+    --background-light: #f0f0f0;
+    --text-light: #000000;
+    --card-light: #ffffff;
+}
+
+body {
+    font-family: sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode {
+    background-color: var(--background-dark);
+    color: var(--text-dark);
+}
+
+body.light-mode {
+    background-color: var(--background-light);
+    color: var(--text-light);
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+}
+
+.controls {
+    padding: 1rem 2rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 2rem;
+}
+
+.gallery-item {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.gallery-item .info {
+    padding: 1rem;
+}
+
+body.dark-mode .gallery-item {
+    background-color: var(--card-dark);
+}
+
+body.light-mode .gallery-item {
+    background-color: var(--card-light);
+}

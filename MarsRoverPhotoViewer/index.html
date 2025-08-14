@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mars Rover Photos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark-mode">
+    <header>
+        <h1>Mars Rover Photos</h1>
+        <button id="theme-toggle">Dark Mode</button>
+    </header>
+    <main>
+        <div class="controls">
+            <select id="rover-select">
+                <option value="curiosity">Curiosity</option>
+                <option value="opportunity">Opportunity</option>
+                <option value="perseverance">Perseverance</option>
+                <option value="spirit">Spirit</option>
+            </select>
+            <select id="camera-select">
+                <option value="all">All Cameras</option>
+            </select>
+            <input type="date" id="date-input">
+            <button id="fetch-photos">Get Photos</button>
+        </div>
+        <div id="photo-gallery" class="gallery"></div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
